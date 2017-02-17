@@ -15,8 +15,51 @@
 </body>
 <script src="/lib/three.js"></script>
 <script>
+    const W = 600;
+    const H = 400;
+
+    const scene = new THREE.Scene();
+
+    const loader = new THREE.JSONLoader();
+
+    loader.load('/resources/mark_cup5.json',function (geometry,materials){
+
+        const material = new THREE.MeshFaceMaterial(materials);
 
 
+        const mesh = new THREE.Mesh(geometry,materials);
+
+//        mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5;
+        mesh.transition = geometry.center();
+
+        const light = new THREE.AmbientLight(0xffffff);
+        const light2 = new THREE.PointLight(0xffffdd);
+
+        light2.position.set(10,0,-10);
+
+        scene.add(light);
+        scene.add(light2);
+        scene.add(mesh);
+
+        const camera = new THREE.PerspectiveCamera(50,W/H,1,10000);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(W,H);
+
+        document.body.appendChild(renderer.domElement);
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            mesh.rotation.y += 0.01;
+
+            renderer.render(scene,camera);
+        }
+
+        animate();
+    });
 
 </script>
 </html>
