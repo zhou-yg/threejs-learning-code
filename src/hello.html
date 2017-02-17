@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> </title>
+</head>
+<body>
+<p>
+    <a href="/">根目录</a>
+</p>
+<h1>
+    hello three
+</h1>
+
+</body>
+<script src="/lib/three.js"></script>
+<script>
+
+    const W = 600;
+    const H = 400;
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(50,1000/800,1,10000);
+
+    camera.position.z = 1000;
+
+    const geometry = new THREE.BoxGeometry(200,200,200);
+    const material = new THREE.MeshBasicMaterial({
+        color:0xff00ff,
+        wireframe:true
+    });
+
+    const mesh = new THREE.Mesh(geometry,material);
+
+    scene.add(mesh);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(W,H);
+
+    document.body.appendChild(renderer.domElement);
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        mesh.rotation.x += 0.00;
+        mesh.rotation.y += 0.01;
+        mesh.rotation.z += 0.00;
+
+        renderer.render(scene,camera);
+    }
+
+    animate();
+
+</script>
+</html>
