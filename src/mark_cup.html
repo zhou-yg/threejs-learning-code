@@ -22,43 +22,52 @@
 
     const loader = new THREE.JSONLoader();
 
-    loader.load('/resources/mark_cup_with_material.json',function (geometry,materials){
+    const tLoaader = new THREE.TextureLoader();
 
-        const material = new THREE.MeshFaceMaterial(materials);
+    loader.load('/resources/mark_cup_with_texture.json',function (geometry,materials){
+
+        tLoaader.load('/resources/lime.jpg',function (texture) {
+
+            var m  = new THREE.MeshBasicMaterial({
+                map:texture,
+            });
+
+            const mesh = new THREE.Mesh(geometry,m);
+
+            mesh.transition = geometry.center();
 
 
-        const mesh = new THREE.Mesh(geometry,materials);
+            const light = new THREE.AmbientLight(0xffffff);
+            const light2 = new THREE.PointLight(0xffffdd);
 
-//        mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5;
-        mesh.transition = geometry.center();
+            light2.position.set(10,0,-10);
 
-        const light = new THREE.AmbientLight(0xffffff);
-        const light2 = new THREE.PointLight(0xffffdd);
+            scene.add(light);
+            scene.add(light2);
+            scene.add(mesh);
 
-        light2.position.set(10,0,-10);
 
-        scene.add(light);
-        scene.add(light2);
-        scene.add(mesh);
 
-        const camera = new THREE.PerspectiveCamera(50,W/H,1,10000);
-        camera.position.z = 5;
+            const camera = new THREE.PerspectiveCamera(50,W/H,1,10000);
+            camera.position.z = 5;
 
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(W,H);
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(W,H);
 
-        document.body.appendChild(renderer.domElement);
+            document.body.appendChild(renderer.domElement);
 
-        function animate() {
+            function animate() {
 
-            requestAnimationFrame(animate);
+                requestAnimationFrame(animate);
 
-            mesh.rotation.y += 0.01;
+                mesh.rotation.y += 0.01;
 
-            renderer.render(scene,camera);
-        }
+                renderer.render(scene,camera);
+            }
 
-        animate();
+            animate();
+
+        });
     });
 
 </script>

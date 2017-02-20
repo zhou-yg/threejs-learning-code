@@ -1,0 +1,20 @@
+{
+  "name": "threejs-learning-code",
+  "version": "1.0.0",
+  "description": "learning three.js & blender",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "s":"http-server . -p 23333"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhou-yg/threejs-learning-code.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhou-yg/threejs-learning-code/issues"
+  },
+  "homepage": "https://github.com/zhou-yg/threejs-learning-code#readme"
+}
