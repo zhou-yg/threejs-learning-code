@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<p>
+  <a href="/src">根目录</a>
+</p>
+<h1>
+
+</h1>
+
+</body>
+<script src="/lib/three.js"></script>
+<script>
+  const W = 600;
+  const H = 400;
+
+  const treeJson = '/resources/tree.json';
+  const boardBlockJson = '/resources/boardBlock.json';
+
+
+  const boardPositions = [];
+
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+
+      boardPositions.push([
+        (j - 4) * 2, 0, (i - 4) * 2
+      ])
+    }
+  }
+
+  const boardTopPosition = boardPositions.map(function (arr) {
+    arr = arr.slice();
+    arr[1] = 1;
+    return arr;
+  });
+
+
+
+  const treePositions = [
+    boardTopPosition[0],
+    boardTopPosition[37],
+  ];
+
+
+  function loadP(path) {
+    return new Promise(function (resolve) {
+
+      const loader = new THREE.JSONLoader();
+
+      loader.load(path, function (geometry, materials) {
+
+        resolve({
+          geometry,
+
+          materials,
+        });
+      });
+    });
+  }
+
+  Promise.all([loadP(treeJson), loadP(boardBlockJson)]).then(function (arr) {
+    const scene = new THREE.Scene();
+
+//    const treeObj = arr[0];
+//    const boardObj = arr[1];
+
+
+    var meshsArr = [treePositions, boardPositions].map(function (pArr, i) {
+
+      const obj = arr[i];
+
+      return pArr.map(function (p) {
+
+        const mesh = new THREE.Mesh(obj.geometry, obj.materials);
+
+        mesh.transition = obj.geometry.center();
+
+        mesh.position.set.apply(mesh.position, p);
+
+//        console.log(mesh);
+
+        return mesh;
+      });
+    });
+
+    meshsArr[0].concat(meshsArr[1]).forEach(function (mesh) {
+
+      scene.add(mesh);
+    });
+
+    const light = new THREE.AmbientLight(0xffffff);
+
+    scene.add(light);
+
+
+    const camera = new THREE.PerspectiveCamera(50, W / H, 1, 10000);
+    camera.position.z = 10;
+
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(W, H);
+
+    document.body.appendChild(renderer.domElement);
+
+    renderer.domElement.onmousemove = function (e) {
+      const cameraX = e.x - W / 2;
+      const cameraY = e.y - H / 2;
+
+      camera.position.x = cameraX / 20;
+      camera.position.y = -cameraY / 20;
+    };
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  });
+
+</script>
+</html>

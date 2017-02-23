@@ -9,7 +9,7 @@
     <a href="/src">根目录</a>
 </p>
 <h1>
-    hello three
+
 </h1>
 
 </body>
@@ -21,17 +21,18 @@
 
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(50,W/H,1,10000);
+    const camera = new THREE.PerspectiveCamera(50,W/H,1,1000);
 
-    camera.position.z = 1000;
+    camera.position.z = 400;
 
     const geometry = new THREE.BoxGeometry(200,200,200);
     const material = new THREE.MeshBasicMaterial({
         color:0xff00ff,
-        wireframe:true
+        wireframe:true,
     });
 
     const mesh = new THREE.Mesh(geometry,material);
+    mesh.position.y = -100;
 
     scene.add(mesh);
 
