@@ -9,7 +9,8 @@
   <a href="/src">根目录</a>
 </p>
 <h1>
-
+  <input type="text" id="cameraZInput" value="0,10,10" placeholder="camera.z" width="100px"> <br>
+  <input type="text" id="lookAtInput" value="0,-1 ,0" placeholder="lookAt" width="100px">
 </h1>
 
 </body>
@@ -44,6 +45,7 @@
   const treePositions = [
     boardTopPosition[0],
     boardTopPosition[37],
+          [0,0,0]
   ];
 
 
@@ -100,6 +102,8 @@
 
     const camera = new THREE.PerspectiveCamera(50, W / H, 1, 10000);
     camera.position.z = 10;
+    var v3 = new THREE.Vector3(0,0,0)
+    camera.lookAt(v3);
 
 
     const renderer = new THREE.WebGLRenderer();
@@ -107,12 +111,43 @@
 
     document.body.appendChild(renderer.domElement);
 
-    renderer.domElement.onmousemove = function (e) {
-      const cameraX = e.x - W / 2;
-      const cameraY = e.y - H / 2;
+//    var isDown = false;
+//    renderer.domElement.onmousedown = function () {
+//      isDown = true;
+//    };
+//    renderer.domElement.onmouseup = function () {
+//      isDown = false;
+//    };
+//    renderer.domElement.onmousemove = function (e) {
+//      if(isDown){
+//        const cameraX = e.x - W / 2;
+//        const cameraY = e.y - H / 2;
+//
+//        camera.position.x = cameraX / 20;
+//        camera.position.y = -cameraY / 20;
+//      }
+//    };
 
-      camera.position.x = cameraX / 20;
-      camera.position.y = -cameraY / 20;
+    document.getElementById('lookAtInput').onchange = function (e) {
+      var v = e.currentTarget.value.split(',').map(function (v) {
+        return Number(v);
+      });
+
+      v3.x = v[0];
+      v3.y = v[1];
+      v3.z = v[2];
+
+      camera.lookAt(v3);
+    }
+
+    document.getElementById('cameraZInput').onchange = function (e) {
+      var v = e.currentTarget.value.split(',').map(function (v) {
+        return Number(v);
+      });
+
+      camera.position.x = v[0];
+      camera.position.y = v[1];
+      camera.position.z = v[2];
     };
 
     function animate() {
