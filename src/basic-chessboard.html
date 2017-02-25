@@ -9,13 +9,29 @@
   <a href="/src">根目录</a>
 </p>
 <h1>
-  <input type="text" id="cameraZInput" value="0,10,10" placeholder="camera.z" width="100px"> <br>
-  <input type="text" id="lookAtInput" value="0,-1 ,0" placeholder="lookAt" width="100px">
+  <input type="text" id="cameraZInput" value="0,10,10" placeholder="camera.z" width="100px"> <br/>
+  <input type="text" id="lookAtInput" value="0,-1 ,0" placeholder="lookAt" width="100px"> <br/>
+
+  <button type="text" id="up" >↑</button>
+  <button type="text" id="down" >↓</button>
+  <button type="text" id="left" >←</button>
+  <button type="text" id="right" >→</button>
+  <button id="min">min</button>
+  <button id="max">max</button><br/>
+
+  <button id="es">东南</button>
+  <button id="ws">西南</button>
+  <button id="wn">西北</button>
+  <button id="en">东北</button> <br/>
+
 </h1>
 
 </body>
 <script src="/lib/three.js"></script>
 <script>
+
+  window.$ = document.querySelector.bind(document);
+
   const W = 600;
   const H = 400;
 
@@ -39,7 +55,6 @@
     arr[1] = 1;
     return arr;
   });
-
 
 
   const treePositions = [
@@ -101,7 +116,10 @@
 
 
     const camera = new THREE.PerspectiveCamera(50, W / H, 1, 10000);
-    camera.position.z = 10;
+    var cInitX = 5;
+    var cInitY = 10;
+    var cInitZ = 10;
+    camera.position.set(cInitX,cInitY,cInitZ);
     var v3 = new THREE.Vector3(0,0,0)
     camera.lookAt(v3);
 
@@ -111,24 +129,31 @@
 
     document.body.appendChild(renderer.domElement);
 
-//    var isDown = false;
-//    renderer.domElement.onmousedown = function () {
-//      isDown = true;
-//    };
-//    renderer.domElement.onmouseup = function () {
-//      isDown = false;
-//    };
-//    renderer.domElement.onmousemove = function (e) {
-//      if(isDown){
-//        const cameraX = e.x - W / 2;
-//        const cameraY = e.y - H / 2;
-//
-//        camera.position.x = cameraX / 20;
-//        camera.position.y = -cameraY / 20;
-//      }
-//    };
+    var isDown = false;
+    var initX = 0;
+    var initY = 0;
+    renderer.domElement.onmousedown = function (e) {
+      isDown = true;
+      initX = e.x;
+      initY = e.y;
+    };
+    renderer.domElement.onmouseup = function () {
+      isDown = false;
+      cInitX = camera.position.x;
+      cInitZ = camera.position.z;
+    };
+    renderer.domElement.onmousemove = function (e) {
+      if(isDown){
+        const dX = e.x - initX;
+        const dY = e.y - initY;
 
-    document.getElementById('lookAtInput').onchange = function (e) {
+        camera.position.x = cInitX + dX * 0.02;
+        camera.position.z = cInitZ - dY * 0.02;
+      }
+    };
+
+
+    $('#lookAtInput').onchange = function (e) {
       var v = e.currentTarget.value.split(',').map(function (v) {
         return Number(v);
       });
@@ -138,9 +163,9 @@
       v3.z = v[2];
 
       camera.lookAt(v3);
-    }
+    };
 
-    document.getElementById('cameraZInput').onchange = function (e) {
+    $('#cameraZInput').onchange = function (e) {
       var v = e.currentTarget.value.split(',').map(function (v) {
         return Number(v);
       });
@@ -148,6 +173,46 @@
       camera.position.x = v[0];
       camera.position.y = v[1];
       camera.position.z = v[2];
+    };
+
+    $('#up').onclick = function () {
+
+      camera.position.z--;
+    };
+    $('#down').onclick = function () {
+      camera.position.z++;
+    };
+    $('#left').onclick = function () {
+      camera.position.x--;
+    };
+    $('#right').onclick = function () {
+      camera.position.x++;
+    };
+    $('#min').onclick = function () {
+      camera.position.y > 0 && camera.position.y--;
+    };
+    $('#max').onclick = function () {
+      camera.position.y++;
+    };
+    $('#es').onclick = function () {
+      camera.position.x = 5;
+      camera.position.z = 10;
+      camera.lookAt(v3);
+    };
+    $('#ws').onclick = function () {
+      camera.position.x = -5;
+      camera.position.z = 10;
+      camera.lookAt(v3);
+    };
+    $('#wn').onclick = function () {
+      camera.position.x = -5;
+      camera.position.z = -10;
+      camera.lookAt(v3);
+    };
+    $('#en').onclick = function () {
+      camera.position.x = 5;
+      camera.position.z = -10;
+      camera.lookAt(v3);
     };
 
     function animate() {
